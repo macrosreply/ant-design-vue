@@ -5,7 +5,7 @@ import { getColumnsKey } from '../utils/valueUtil';
 import MeasureCell from './MeasureCell';
 import BodyRow from './BodyRow';
 import useFlattenRecords from '../hooks/useFlattenRecords';
-import { defineComponent, shallowRef, toRef } from 'vue';
+import { computed, defineComponent, shallowRef, toRef } from 'vue';
 import { useInjectResize } from '../context/ResizeContext';
 import { useInjectTable } from '../context/TableContext';
 import { useInjectBody } from '../context/BodyContext';
@@ -19,6 +19,7 @@ export interface BodyProps<RecordType> {
   customRow: GetComponentProps<RecordType>;
   rowExpandable: (record: RecordType) => boolean;
   childrenColumnName: string;
+  rowHoverable?: boolean;
 }
 
 export default defineComponent<BodyProps<any>>({
@@ -31,6 +32,7 @@ export default defineComponent<BodyProps<any>>({
     'customRow',
     'rowExpandable',
     'childrenColumnName',
+    'rowHoverable',
   ] as any,
   setup(props, { slots }) {
     const resizeContext = useInjectResize();
@@ -50,12 +52,14 @@ export default defineComponent<BodyProps<any>>({
       startRow,
       endRow,
       onHover: (start, end) => {
+        if (props.rowHoverable === false) return;
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
           startRow.value = start;
           endRow.value = end;
         }, 100);
       },
+      rowHoverable: computed(() => props.rowHoverable !== false),
     });
     return () => {
       const {

@@ -117,6 +117,12 @@ export interface TableProps<RecordType = DefaultRecordType>
   };
   sortDirections?: SortOrder[];
   showSorterTooltip?: boolean | TooltipProps;
+  /**
+   * Whether table rows should support hover highlighting (including rowSpan-aware hover).
+   * Disabling this skips the hover-related computations/listeners entirely, which can
+   * improve performance for very large tables. Defaults to `false`.
+   */
+  rowHoverable?: boolean;
 }
 
 export const tableProps = () => {
@@ -182,6 +188,7 @@ export const tableProps = () => {
     sortDirections: arrayType<SortOrder[]>(),
     showSorterTooltip: someType<boolean | TooltipProps>([Boolean, Object], true),
     transformCellText: functionType<TableProps['transformCellText']>(),
+    rowHoverable: booleanType(),
   };
 };
 
@@ -195,6 +202,7 @@ const InternalTable = defineComponent({
     },
     {
       rowKey: 'key',
+      rowHoverable: false,
     },
   ),
   setup(props, { attrs, slots, expose, emit }) {
@@ -645,6 +653,7 @@ const Table = defineComponent({
   inheritAttrs: false,
   props: initDefaultProps(tableProps(), {
     rowKey: 'key',
+    rowHoverable: false,
   }),
   slots: Object as CustomSlotsType<{
     emptyText?: any;
