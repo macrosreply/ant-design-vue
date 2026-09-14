@@ -107,7 +107,10 @@ export default defineComponent({
   ],
   setup(props, { slots }) {
     const contextSlots = useInjectSlots();
-    const { onHover, startRow, endRow } = useInjectHover();
+    const { onHover, startRow, endRow, rowHoverable } = useInjectHover();
+    // `rowHoverable` is expected to be set once when the table is created, so it's safe
+    // to resolve it eagerly here and skip all hover-related reactivity entirely when disabled.
+    const hoverEnabled = rowHoverable ? rowHoverable.value !== false : true;
     const colSpan = computed(() => {
       return (
         props.colSpan ??
@@ -122,30 +125,59 @@ export default defineComponent({
         (props.additionalProps?.rowspan as number)
       );
     });
-    const hovering = eagerComputed(() => {
-      const { index } = props;
-      return inHoverRange(index, rowSpan.value || 1, startRow.value, endRow.value);
-    });
     const supportSticky = useInjectSticky();
 
     // ====================== Hover =======================
-    const onMouseenter = (event: MouseEvent, mergedRowSpan: number) => {
-      const { record, index, additionalProps } = props;
-      if (record) {
-        onHover(index, index + mergedRowSpan - 1);
-      }
+    let onMouseenter: (event: MouseEvent, mergedRowSpan: number) => void;
+    let onMouseleave: MouseEventHandler;
+    let hoverRef: ReturnType<typeof shallowRef>;
 
-      additionalProps?.onMouseenter?.(event);
-    };
+    if (hoverEnabled) {
+      const hovering = eagerComputed(() => {
+        const { index } = props;
+        return inHoverRange(index, rowSpan.value || 1, startRow.value, endRow.value);
+      });
 
-    const onMouseleave: MouseEventHandler = event => {
-      const { record, additionalProps } = props;
-      if (record) {
-        onHover(-1, -1);
-      }
+      onMouseenter = (event: MouseEvent, mergedRowSpan: number) => {
+        const { record, index, additionalProps } = props;
+        if (record) {
+          onHover(index, index + mergedRowSpan - 1);
+        }
 
-      additionalProps?.onMouseleave?.(event);
-    };
+        additionalProps?.onMouseenter?.(event);
+      };
+
+      onMouseleave = event => {
+        const { record, additionalProps } = props;
+        if (record) {
+          onHover(-1, -1);
+        }
+
+        additionalProps?.onMouseleave?.(event);
+      };
+
+      hoverRef = shallowRef(null);
+      watch([hovering, () => props.prefixCls, hoverRef], () => {
+        const cellDom = findDOMNode(hoverRef.value);
+        if (!cellDom) return;
+        if (hovering.value) {
+          addClass(cellDom, `${props.prefixCls}-cell-row-hover`);
+        } else {
+          removeClass(cellDom, `${props.prefixCls}-cell-row-hover`);
+        }
+      });
+    } else {
+      // Hover highlighting disabled: only forward user-supplied mouse handlers, skip
+      // all hover-state tracking, computed subscriptions and DOM class toggling.
+      onMouseenter = (event: MouseEvent) => {
+        props.additionalProps?.onMouseenter?.(event);
+      };
+      onMouseleave = event => {
+        props.additionalProps?.onMouseleave?.(event);
+      };
+      hoverRef = shallowRef(null);
+    }
+
     const getTitle = (vnodes: VNodeArrayChildren) => {
       const vnode = filterEmpty(vnodes)[0];
       if (isVNode(vnode)) {
@@ -158,17 +190,6 @@ export default defineComponent({
         return vnode;
       }
     };
-
-    const hoverRef = shallowRef(null);
-    watch([hovering, () => props.prefixCls, hoverRef], () => {
-      const cellDom = findDOMNode(hoverRef.value);
-      if (!cellDom) return;
-      if (hovering.value) {
-        addClass(cellDom, `${props.prefixCls}-cell-row-hover`);
-      } else {
-        removeClass(cellDom, `${props.prefixCls}-cell-row-hover`);
-      }
-    });
     return () => {
       const {
         prefixCls,

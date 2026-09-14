@@ -1,8 +1,8 @@
 /* eslint-disable no-template-curly-in-string */
-import Pagination from '../vc-pagination/locale/ckb';
-import DatePicker from '../date-picker/locale/ckb';
-import TimePicker from '../time-picker/locale/ckb';
-import Calendar from '../calendar/locale/ckb';
+import Pagination from '../vc-pagination/locale/ckb_IQ';
+import DatePicker from '../date-picker/locale/ckb_IQ';
+import TimePicker from '../time-picker/locale/ckb_IQ';
+import Calendar from '../calendar/locale/ckb_IQ';
 import type { Locale } from '../locale-provider';
 
 const typeTemplate = '${label} ${type}ێکی دروست نییە';

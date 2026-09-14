@@ -147,6 +147,13 @@ export interface TableProps<RecordType = DefaultRecordType> {
   onUpdateInternalRefs?: (refs: Record<string, any>) => void;
 
   transformCellText?: TransformCellText<RecordType>;
+
+  /**
+   * Whether table rows should support hover highlighting (including rowSpan-aware hover).
+   * Disabling this skips the hover-related computations/listeners entirely, which can
+   * improve performance for very large tables. Defaults to `true`.
+   */
+  rowHoverable?: boolean;
 }
 
 export default defineComponent({
@@ -191,6 +198,7 @@ export default defineComponent({
     'canExpandable',
     'onUpdateInternalRefs',
     'transformCellText',
+    'rowHoverable',
   ],
   emits: ['expand', 'expandedRowsChange', 'updateInternalRefs', 'update:expandedRowKeys'],
   setup(props, { attrs, slots, emit }) {
@@ -627,6 +635,7 @@ export default defineComponent({
         getRowKey={getRowKey.value}
         customRow={props.customRow}
         childrenColumnName={mergedChildrenColumnName.value}
+        rowHoverable={props.rowHoverable}
         v-slots={{ emptyNode }}
       />
     );
