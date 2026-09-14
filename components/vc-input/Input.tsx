@@ -191,7 +191,7 @@ export default defineComponent({
       if (!inputProps.autofocus) {
         delete inputProps.autofocus;
       }
-      const inputNode = <BaseInputCore {...omit(inputProps, ['size'])} />;
+      const inputNode = <BaseInputCore {...(omit(inputProps, ['size']) as any)} />;
       return inputNode;
     };
     const getSuffix = () => {
