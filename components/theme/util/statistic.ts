@@ -5,23 +5,24 @@ const enableStatistic =
 let recording = true;
 
 /**
- * This function will do as `Object.assign` in production. But will use Object.defineProperty:get to
- * pass all value access in development. To support statistic field usage with alias token.
+ * Merge tokens with first-value-wins semantics. In development, getters preserve token statistic
+ * behavior while keeping the value from the first object when keys overlap.
  */
 export function merge<T extends object>(...objs: Partial<T>[]): T {
-  /* istanbul ignore next */
-  if (!enableStatistic) {
-    return Object.assign({}, ...objs);
-  }
+  const ret = {} as T;
+  const mergedKeys = new Set<string>();
 
   recording = false;
-
-  const ret = {} as T;
 
   objs.forEach(obj => {
     const keys = Object.keys(obj);
 
     keys.forEach(key => {
+      if (mergedKeys.has(key)) {
+        return;
+      }
+
+      mergedKeys.add(key);
       Object.defineProperty(ret, key, {
         configurable: true,
         enumerable: true,
