@@ -4,25 +4,52 @@ const enableStatistic =
   process.env.NODE_ENV !== 'production' || typeof CSSINJS_STATISTIC !== 'undefined';
 let recording = true;
 
+export interface MergeTokenOptions {
+  preserveExisting?: boolean;
+}
+
 /**
- * Merge tokens with first-value-wins semantics. In development, getters preserve token statistic
- * behavior while keeping the value from the first object when keys overlap.
+ * This function will do as `Object.assign` in production. But will use Object.defineProperty:get to
+ * pass all value access in development. To support statistic field usage with alias token.
  */
-export function merge<T extends object>(...objs: Partial<T>[]): T {
-  const ret = {} as T;
-  const mergedKeys = new Set<string>();
+export function merge<T extends object>(
+  ...args: [...objs: Partial<T>[], options: MergeTokenOptions]
+): T;
+export function merge<T extends object>(...objs: Partial<T>[]): T;
+export function merge<T extends object>(...args: Array<Partial<T> | MergeTokenOptions>): T {
+  const lastArg = args[args.length - 1];
+  const hasOptions = lastArg && typeof lastArg === 'object' && 'preserveExisting' in lastArg;
+  const options = hasOptions ? (lastArg as MergeTokenOptions) : undefined;
+  const objs = (hasOptions ? args.slice(0, -1) : args) as Partial<T>[];
+
+  /* istanbul ignore next */
+  if (!enableStatistic) {
+    if (!options?.preserveExisting) {
+      return Object.assign({}, ...objs);
+    }
+
+    return objs.reduce<T>((result, obj) => {
+      Object.keys(obj).forEach(key => {
+        if (!Object.prototype.hasOwnProperty.call(result, key)) {
+          (result as any)[key] = (obj as any)[key];
+        }
+      });
+      return result;
+    }, {} as T);
+  }
 
   recording = false;
+
+  const ret = {} as T;
 
   objs.forEach(obj => {
     const keys = Object.keys(obj);
 
     keys.forEach(key => {
-      if (mergedKeys.has(key)) {
+      if (options?.preserveExisting && Object.prototype.hasOwnProperty.call(ret, key)) {
         return;
       }
 
-      mergedKeys.add(key);
       Object.defineProperty(ret, key, {
         configurable: true,
         enumerable: true,

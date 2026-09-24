@@ -300,60 +300,66 @@ export default genComponentStyleHook('Table', token => {
     .onBackground(colorBgContainer)
     .toHexString();
 
-  const tableToken = mergeToken<TableToken>(token, {
-    tableFontSize: fontSize,
-    tableBg: colorBgContainer,
-    tableRadius: borderRadiusLG,
+  const tableToken = mergeToken<TableToken>(
+    token,
+    {
+      tableFontSize: fontSize,
+      tableBg: colorBgContainer,
+      tableRadius: borderRadiusLG,
 
-    tablePaddingVertical: padding,
-    tablePaddingHorizontal: padding,
-    tablePaddingVerticalMiddle: paddingSM,
-    tablePaddingHorizontalMiddle: paddingXS,
-    tablePaddingVerticalSmall: paddingXS,
-    tablePaddingHorizontalSmall: paddingXS,
-    tableBorderColor: colorBorderSecondary,
-    tableHeaderTextColor: colorTextHeading,
-    tableHeaderBg: colorFillAlterSolid,
-    tableFooterTextColor: colorTextHeading,
-    tableFooterBg: colorFillAlterSolid,
-    tableHeaderCellSplitColor: colorBorderSecondary,
-    tableHeaderSortBg: colorFillSecondarySolid,
-    tableHeaderSortHoverBg: colorFillContentSolid,
-    tableHeaderIconColor: baseColorAction
-      .clone()
-      .setAlpha(baseColorAction.getAlpha() * opacityLoading)
-      .toRgbString(),
-    tableHeaderIconColorHover: baseColorActionHover
-      .clone()
-      .setAlpha(baseColorActionHover.getAlpha() * opacityLoading)
-      .toRgbString(),
-    tableBodySortBg: colorFillAlterSolid,
-    tableFixedHeaderSortActiveBg: colorFillSecondarySolid,
-    tableHeaderFilterActiveBg: colorFillContent,
-    tableFilterDropdownBg: colorBgContainer,
-    tableRowHoverBg: colorFillAlterSolid,
-    tableSelectedRowBg,
-    tableSelectedRowHoverBg: controlItemBgActiveHover,
-    zIndexTableFixed,
-    zIndexTableSticky: zIndexTableFixed + 1,
-    tableFontSizeMiddle: fontSize,
-    tableFontSizeSmall: fontSize,
-    tableSelectionColumnWidth: controlHeight,
-    tableExpandIconBg: colorBgContainer,
-    tableExpandColumnWidth: checkboxSize + 2 * token.padding,
-    tableExpandedRowBg: colorFillAlter,
+      tablePaddingVertical: padding,
+      tablePaddingHorizontal: padding,
+      tablePaddingVerticalMiddle: paddingSM,
+      tablePaddingHorizontalMiddle: paddingXS,
+      tablePaddingVerticalSmall: paddingXS,
+      tablePaddingHorizontalSmall: paddingXS,
+      tableBorderColor: colorBorderSecondary,
+      tableHeaderTextColor: colorTextHeading,
+      tableHeaderBg: colorFillAlterSolid,
+      tableFooterTextColor: colorTextHeading,
+      tableFooterBg: colorFillAlterSolid,
+      tableHeaderCellSplitColor: colorBorderSecondary,
+      tableHeaderSortBg: colorFillSecondarySolid,
+      tableHeaderSortHoverBg: colorFillContentSolid,
+      tableHeaderIconColor: baseColorAction
+        .clone()
+        .setAlpha(baseColorAction.getAlpha() * opacityLoading)
+        .toRgbString(),
+      tableHeaderIconColorHover: baseColorActionHover
+        .clone()
+        .setAlpha(baseColorActionHover.getAlpha() * opacityLoading)
+        .toRgbString(),
+      tableBodySortBg: colorFillAlterSolid,
+      tableFixedHeaderSortActiveBg: colorFillSecondarySolid,
+      tableHeaderFilterActiveBg: colorFillContent,
+      tableFilterDropdownBg: colorBgContainer,
+      tableRowHoverBg: colorFillAlterSolid,
+      tableSelectedRowBg,
+      tableSelectedRowHoverBg: controlItemBgActiveHover,
+      zIndexTableFixed,
+      zIndexTableSticky: zIndexTableFixed + 1,
+      tableFontSizeMiddle: fontSize,
+      tableFontSizeSmall: fontSize,
+      tableSelectionColumnWidth: controlHeight,
+      tableExpandIconBg: colorBgContainer,
+      tableExpandColumnWidth: checkboxSize + 2 * token.padding,
+      tableExpandedRowBg: colorFillAlter,
 
-    // Dropdown
-    tableFilterDropdownWidth: 120,
-    tableFilterDropdownHeight: 264,
-    tableFilterDropdownSearchWidth: 140,
+      // Dropdown
+      tableFilterDropdownWidth: 120,
+      tableFilterDropdownHeight: 264,
+      tableFilterDropdownSearchWidth: 140,
 
-    // Virtual Scroll Bar
-    tableScrollThumbSize: 8, // Mac scroll bar size
-    tableScrollThumbBg: colorTextPlaceholder,
-    tableScrollThumbBgHover: colorTextHeading,
-    tableScrollBg: colorSplit,
-  });
+      // Virtual Scroll Bar
+      tableScrollThumbSize: 8, // Mac scroll bar size
+      tableScrollThumbBg: colorTextPlaceholder,
+      tableScrollThumbBgHover: colorTextHeading,
+      tableScrollBg: colorSplit,
+    },
+    {
+      preserveExisting: true,
+    },
+  );
 
   return [
     genTableStyle(tableToken),

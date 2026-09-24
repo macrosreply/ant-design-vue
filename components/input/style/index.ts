@@ -876,27 +876,33 @@ const genSearchInputStyle: GenerateStyle<InputToken> = (token: InputToken) => {
 
 export function initInputToken<T extends GlobalToken = GlobalToken>(token: T): InputToken<T> {
   // @ts-ignore
-  return mergeToken<InputToken<T>>(token, {
-    inputAffixPadding: token.paddingXXS,
-    inputPaddingVertical: Math.max(
-      Math.round(((token.controlHeight - token.fontSize * token.lineHeight) / 2) * 10) / 10 -
+  return mergeToken<InputToken<T>>(
+    token,
+    {
+      inputAffixPadding: token.paddingXXS,
+      inputPaddingVertical: Math.max(
+        Math.round(((token.controlHeight - token.fontSize * token.lineHeight) / 2) * 10) / 10 -
+          token.lineWidth,
+        3,
+      ),
+      inputPaddingVerticalLG:
+        Math.ceil(((token.controlHeightLG - token.fontSizeLG * token.lineHeightLG) / 2) * 10) / 10 -
         token.lineWidth,
-      3,
-    ),
-    inputPaddingVerticalLG:
-      Math.ceil(((token.controlHeightLG - token.fontSizeLG * token.lineHeightLG) / 2) * 10) / 10 -
-      token.lineWidth,
-    inputPaddingVerticalSM: Math.max(
-      Math.round(((token.controlHeightSM - token.fontSize * token.lineHeight) / 2) * 10) / 10 -
-        token.lineWidth,
-      0,
-    ),
-    inputPaddingHorizontal: token.paddingSM - token.lineWidth,
-    inputPaddingHorizontalSM: token.paddingXS - token.lineWidth,
-    inputPaddingHorizontalLG: token.controlPaddingHorizontal - token.lineWidth,
-    inputBorderHoverColor: token.colorPrimaryHover,
-    inputBorderActiveColor: token.colorPrimaryHover,
-  });
+      inputPaddingVerticalSM: Math.max(
+        Math.round(((token.controlHeightSM - token.fontSize * token.lineHeight) / 2) * 10) / 10 -
+          token.lineWidth,
+        0,
+      ),
+      inputPaddingHorizontal: token.paddingSM - token.lineWidth,
+      inputPaddingHorizontalSM: token.paddingXS - token.lineWidth,
+      inputPaddingHorizontalLG: token.controlPaddingHorizontal - token.lineWidth,
+      inputBorderHoverColor: token.colorPrimaryHover,
+      inputBorderActiveColor: token.colorPrimaryHover,
+    },
+    {
+      preserveExisting: true,
+    },
+  );
 }
 
 const genTextAreaStyle: GenerateStyle<InputToken> = token => {

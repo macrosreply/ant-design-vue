@@ -517,25 +517,31 @@ export default genComponentStyleHook('Radio', token => {
   const radioDisabledButtonCheckedColor = colorTextDisabled;
   const radioWrapperMarginRight = marginXS;
 
-  const radioToken = mergeToken<RadioToken>(token, {
-    radioFocusShadow,
-    radioButtonFocusShadow,
-    radioSize,
-    radioDotSize,
-    radioDotDisabledSize,
-    radioCheckedColor,
-    radioDotDisabledColor: colorTextDisabled,
-    radioSolidCheckedColor: colorTextLightSolid,
-    radioButtonBg: colorBgContainer,
-    radioButtonCheckedBg: colorBgContainer,
-    radioButtonColor,
-    radioButtonHoverColor,
-    radioButtonActiveColor,
-    radioButtonPaddingHorizontal,
-    radioDisabledButtonCheckedBg: controlItemBgActiveDisabled,
-    radioDisabledButtonCheckedColor,
-    radioWrapperMarginRight,
-  });
+  const radioToken = mergeToken<RadioToken>(
+    token,
+    {
+      radioFocusShadow,
+      radioButtonFocusShadow,
+      radioSize,
+      radioDotSize,
+      radioDotDisabledSize,
+      radioCheckedColor,
+      radioDotDisabledColor: colorTextDisabled,
+      radioSolidCheckedColor: colorTextLightSolid,
+      radioButtonBg: colorBgContainer,
+      radioButtonCheckedBg: colorBgContainer,
+      radioButtonColor,
+      radioButtonHoverColor,
+      radioButtonActiveColor,
+      radioButtonPaddingHorizontal,
+      radioDisabledButtonCheckedBg: controlItemBgActiveDisabled,
+      radioDisabledButtonCheckedColor,
+      radioWrapperMarginRight,
+    },
+    {
+      preserveExisting: true,
+    },
+  );
 
   return [
     getGroupRadioStyle(radioToken),
