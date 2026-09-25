@@ -873,22 +873,28 @@ export default genComponentStyleHook(
   token => {
     const tabsCardHeight = token.controlHeightLG;
 
-    const tabsToken = mergeToken<TabsToken>(token, {
-      tabsHoverColor: token.colorPrimaryHover,
-      tabsActiveColor: token.colorPrimaryActive,
+    const tabsToken = mergeToken<TabsToken>(
+      token,
+      {
+        tabsHoverColor: token.colorPrimaryHover,
+        tabsActiveColor: token.colorPrimaryActive,
 
-      tabsCardHorizontalPadding: `${
-        (tabsCardHeight - Math.round(token.fontSize * token.lineHeight)) / 2 - token.lineWidth
-      }px ${token.padding}px`,
-      tabsCardHeight,
-      tabsCardGutter: token.marginXXS / 2,
-      tabsHorizontalGutter: 32, // Fixed Value
-      tabsCardHeadBackground: token.colorFillAlter,
-      dropdownEdgeChildVerticalPadding: token.paddingXXS,
-      tabsActiveTextShadow: '0 0 0.25px currentcolor',
-      tabsDropdownHeight: 200,
-      tabsDropdownWidth: 120,
-    });
+        tabsCardHorizontalPadding: `${
+          (tabsCardHeight - Math.round(token.fontSize * token.lineHeight)) / 2 - token.lineWidth
+        }px ${token.padding}px`,
+        tabsCardHeight,
+        tabsCardGutter: token.marginXXS / 2,
+        tabsHorizontalGutter: 32, // Fixed Value
+        tabsCardHeadBackground: token.colorFillAlter,
+        dropdownEdgeChildVerticalPadding: token.paddingXXS,
+        tabsActiveTextShadow: '0 0 0.25px currentcolor',
+        tabsDropdownHeight: 200,
+        tabsDropdownWidth: 120,
+      },
+      {
+        preserveExisting: true,
+      },
+    );
 
     return [
       genSizeStyle(tabsToken),
