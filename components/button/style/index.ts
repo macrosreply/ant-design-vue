@@ -1,13 +1,131 @@
 import type { CSSInterpolation, CSSObject } from '../../_util/cssinjs';
 import type { FullToken, GenerateStyle } from '../../theme/internal';
+import type { GlobalToken } from '../../theme/interface';
 import { genComponentStyleHook, mergeToken } from '../../theme/internal';
 import genGroupStyle from './group';
 import { genFocusStyle } from '../../style';
 import { genCompactItemStyle } from '../../style/compact-item';
 import { genCompactItemVerticalStyle } from '../../style/compact-item-vertical';
 
+type ButtonStateToken<Prefix extends string> = Record<
+  `${Prefix}Color` | `${Prefix}Bg` | `${Prefix}BorderColor`,
+  string
+>;
+
+type OutlinedButtonToken<Variant extends 'Default' | 'Dashed'> =
+  ButtonStateToken<`button${Variant}`> &
+    ButtonStateToken<`button${Variant}Hover`> &
+    ButtonStateToken<`button${Variant}Active`> &
+    ButtonStateToken<`button${Variant}Disabled`> &
+    ButtonStateToken<`button${Variant}Danger`> &
+    ButtonStateToken<`button${Variant}DangerHover`> &
+    ButtonStateToken<`button${Variant}DangerActive`> &
+    ButtonStateToken<`button${Variant}DangerDisabled`> &
+    Record<
+      | `button${Variant}Shadow`
+      | `button${Variant}GhostColor`
+      | `button${Variant}GhostBorderColor`
+      | `button${Variant}GhostHoverColor`
+      | `button${Variant}GhostHoverBorderColor`
+      | `button${Variant}GhostActiveColor`
+      | `button${Variant}GhostActiveBorderColor`
+      | `button${Variant}GhostDisabledColor`
+      | `button${Variant}GhostDisabledBorderColor`
+      | `button${Variant}DangerGhostColor`
+      | `button${Variant}DangerGhostBorderColor`
+      | `button${Variant}DangerGhostHoverColor`
+      | `button${Variant}DangerGhostHoverBorderColor`
+      | `button${Variant}DangerGhostActiveColor`
+      | `button${Variant}DangerGhostActiveBorderColor`
+      | `button${Variant}DangerGhostDisabledColor`
+      | `button${Variant}DangerGhostDisabledBorderColor`,
+      string
+    >;
+
 /** Component only token. Which will handle additional calculation of alias token */
-export interface ComponentToken {}
+export interface ComponentToken
+  extends OutlinedButtonToken<'Default'>,
+    OutlinedButtonToken<'Dashed'> {
+  // Primary
+  buttonPrimaryColor: string;
+  buttonPrimaryBg: string;
+  buttonPrimaryBorderColor: string;
+  buttonPrimaryShadow: string;
+  buttonPrimaryHoverColor: string;
+  buttonPrimaryHoverBg: string;
+  buttonPrimaryHoverBorderColor: string;
+  buttonPrimaryActiveColor: string;
+  buttonPrimaryActiveBg: string;
+  buttonPrimaryActiveBorderColor: string;
+  buttonPrimaryDisabledColor: string;
+  buttonPrimaryDisabledBg: string;
+  buttonPrimaryDisabledBorderColor: string;
+  buttonPrimaryGhostColor: string;
+  buttonPrimaryGhostBorderColor: string;
+  buttonPrimaryGhostHoverColor: string;
+  buttonPrimaryGhostHoverBorderColor: string;
+  buttonPrimaryGhostActiveColor: string;
+  buttonPrimaryGhostActiveBorderColor: string;
+  buttonPrimaryGhostDisabledColor: string;
+  buttonPrimaryGhostDisabledBorderColor: string;
+
+  // Primary danger
+  buttonPrimaryDangerColor: string;
+  buttonPrimaryDangerBg: string;
+  buttonPrimaryDangerBorderColor: string;
+  buttonPrimaryDangerShadow: string;
+  buttonPrimaryDangerHoverColor: string;
+  buttonPrimaryDangerHoverBg: string;
+  buttonPrimaryDangerHoverBorderColor: string;
+  buttonPrimaryDangerActiveColor: string;
+  buttonPrimaryDangerActiveBg: string;
+  buttonPrimaryDangerActiveBorderColor: string;
+  buttonPrimaryDangerDisabledColor: string;
+  buttonPrimaryDangerDisabledBg: string;
+  buttonPrimaryDangerDisabledBorderColor: string;
+  buttonPrimaryDangerGhostColor: string;
+  buttonPrimaryDangerGhostBorderColor: string;
+  buttonPrimaryDangerGhostHoverColor: string;
+  buttonPrimaryDangerGhostHoverBorderColor: string;
+  buttonPrimaryDangerGhostActiveColor: string;
+  buttonPrimaryDangerGhostActiveBorderColor: string;
+  buttonPrimaryDangerGhostDisabledColor: string;
+  buttonPrimaryDangerGhostDisabledBorderColor: string;
+
+  // Text
+  buttonTextColor: string;
+  buttonTextHoverColor: string;
+  buttonTextHoverBg: string;
+  buttonTextActiveColor: string;
+  buttonTextActiveBg: string;
+  buttonTextDisabledColor: string;
+  buttonTextDangerColor: string;
+  buttonTextDangerHoverColor: string;
+  buttonTextDangerHoverBg: string;
+  buttonTextDangerActiveColor: string;
+  buttonTextDangerActiveBg: string;
+  buttonTextDangerDisabledColor: string;
+
+  // Link
+  buttonLinkColor: string;
+  buttonLinkHoverColor: string;
+  buttonLinkActiveColor: string;
+  buttonLinkDisabledColor: string;
+  buttonLinkDangerColor: string;
+  buttonLinkDangerHoverColor: string;
+  buttonLinkDangerActiveColor: string;
+  buttonLinkDangerDisabledColor: string;
+
+  // Disabled `.ant-btn-disabled` (e.g. disabled button with href)
+  buttonDisabledColor: string;
+  buttonDisabledBg: string;
+  buttonDisabledBorderColor: string;
+
+  // Separators between adjacent buttons
+  buttonPrimaryCompactSeparatorColor: string;
+  buttonPrimaryGroupSeparatorColor: string;
+  buttonDangerGroupSeparatorColor: string;
+}
 
 export interface ButtonToken extends FullToken<'Button'> {
   // FIXME: should be removed
@@ -71,7 +189,7 @@ const genSharedButtonStyle: GenerateStyle<ButtonToken, CSSObject> = (token): CSS
               display: 'inline-block',
               width: token.lineWidth,
               height: `calc(100% + ${token.lineWidth * 2}px)`,
-              backgroundColor: token.colorPrimaryHover,
+              backgroundColor: token.buttonPrimaryCompactSeparatorColor,
               content: '""',
             },
           },
@@ -90,7 +208,7 @@ const genSharedButtonStyle: GenerateStyle<ButtonToken, CSSObject> = (token): CSS
                 display: 'inline-block',
                 width: `calc(100% + ${token.lineWidth * 2}px)`,
                 height: token.lineWidth,
-                backgroundColor: token.colorPrimaryHover,
+                backgroundColor: token.buttonPrimaryCompactSeparatorColor,
                 content: '""',
               },
             },
@@ -122,11 +240,17 @@ const genRoundButtonStyle: GenerateStyle<ButtonToken, CSSObject> = token => ({
 });
 
 // =============================== Type ===============================
-const genDisabledStyle: GenerateStyle<ButtonToken, CSSObject> = token => ({
+interface DisabledColors {
+  color: string;
+  bg: string;
+  borderColor: string;
+}
+
+const genDisabledStyle = ({ color, bg, borderColor }: DisabledColors): CSSObject => ({
   cursor: 'not-allowed',
-  borderColor: token.colorBorder,
-  color: token.colorTextDisabled,
-  backgroundColor: token.colorBgContainerDisabled,
+  borderColor,
+  color,
+  backgroundColor: bg,
   boxShadow: 'none',
 });
 
@@ -164,221 +288,282 @@ const genGhostButtonStyle = (
   },
 });
 
-const genSolidDisabledButtonStyle: GenerateStyle<ButtonToken, CSSObject> = token => ({
+const genSolidDisabledButtonStyle = (colors: DisabledColors): CSSObject => ({
   '&:disabled': {
-    ...genDisabledStyle(token),
+    ...genDisabledStyle(colors),
   },
 });
 
-const genSolidButtonStyle: GenerateStyle<ButtonToken, CSSObject> = token => ({
-  ...genSolidDisabledButtonStyle(token),
-});
-
-const genPureDisabledButtonStyle: GenerateStyle<ButtonToken, CSSObject> = token => ({
+const genPureDisabledButtonStyle = (color: string): CSSObject => ({
   '&:disabled': {
     cursor: 'not-allowed',
-    color: token.colorTextDisabled,
+    color,
   },
 });
 
-// Type: Default
-const genDefaultButtonStyle: GenerateStyle<ButtonToken, CSSObject> = token => ({
-  ...genSolidButtonStyle(token),
+// Type: Default & Dashed
+const genOutlinedButtonStyle = (token: ButtonToken, variant: 'Default' | 'Dashed'): CSSObject => {
+  const t = (name: string): string =>
+    (token as unknown as Record<string, string>)[`button${variant}${name}`];
 
-  backgroundColor: token.colorBgContainer,
-  borderColor: token.colorBorder,
+  return {
+    ...genSolidDisabledButtonStyle({
+      color: t('DisabledColor'),
+      bg: t('DisabledBg'),
+      borderColor: t('DisabledBorderColor'),
+    }),
 
-  boxShadow: `0 ${token.controlOutlineWidth}px 0 ${token.controlTmpOutline}`,
+    color: t('Color'),
+    backgroundColor: t('Bg'),
+    borderColor: t('BorderColor'),
 
-  ...genHoverActiveButtonStyle(
-    {
-      color: token.colorPrimaryHover,
-      borderColor: token.colorPrimaryHover,
-    },
-    {
-      color: token.colorPrimaryActive,
-      borderColor: token.colorPrimaryActive,
-    },
-  ),
-
-  ...genGhostButtonStyle(
-    token.componentCls,
-    token.colorBgContainer,
-    token.colorBgContainer,
-    token.colorTextDisabled,
-    token.colorBorder,
-  ),
-
-  [`&${token.componentCls}-dangerous`]: {
-    color: token.colorError,
-    borderColor: token.colorError,
+    boxShadow: t('Shadow'),
 
     ...genHoverActiveButtonStyle(
       {
-        color: token.colorErrorHover,
-        borderColor: token.colorErrorBorderHover,
+        color: t('HoverColor'),
+        backgroundColor: t('HoverBg'),
+        borderColor: t('HoverBorderColor'),
       },
       {
-        color: token.colorErrorActive,
-        borderColor: token.colorErrorActive,
+        color: t('ActiveColor'),
+        backgroundColor: t('ActiveBg'),
+        borderColor: t('ActiveBorderColor'),
       },
     ),
 
     ...genGhostButtonStyle(
       token.componentCls,
-      token.colorError,
-      token.colorError,
-      token.colorTextDisabled,
-      token.colorBorder,
+      t('GhostColor'),
+      t('GhostBorderColor'),
+      t('GhostDisabledColor'),
+      t('GhostDisabledBorderColor'),
+      {
+        color: t('GhostHoverColor'),
+        borderColor: t('GhostHoverBorderColor'),
+      },
+      {
+        color: t('GhostActiveColor'),
+        borderColor: t('GhostActiveBorderColor'),
+      },
     ),
-    ...genSolidDisabledButtonStyle(token),
-  },
+
+    [`&${token.componentCls}-dangerous`]: {
+      color: t('DangerColor'),
+      backgroundColor: t('DangerBg'),
+      borderColor: t('DangerBorderColor'),
+
+      ...genHoverActiveButtonStyle(
+        {
+          color: t('DangerHoverColor'),
+          backgroundColor: t('DangerHoverBg'),
+          borderColor: t('DangerHoverBorderColor'),
+        },
+        {
+          color: t('DangerActiveColor'),
+          backgroundColor: t('DangerActiveBg'),
+          borderColor: t('DangerActiveBorderColor'),
+        },
+      ),
+
+      ...genGhostButtonStyle(
+        token.componentCls,
+        t('DangerGhostColor'),
+        t('DangerGhostBorderColor'),
+        t('DangerGhostDisabledColor'),
+        t('DangerGhostDisabledBorderColor'),
+        {
+          color: t('DangerGhostHoverColor'),
+          borderColor: t('DangerGhostHoverBorderColor'),
+        },
+        {
+          color: t('DangerGhostActiveColor'),
+          borderColor: t('DangerGhostActiveBorderColor'),
+        },
+      ),
+      ...genSolidDisabledButtonStyle({
+        color: t('DangerDisabledColor'),
+        bg: t('DangerDisabledBg'),
+        borderColor: t('DangerDisabledBorderColor'),
+      }),
+    },
+  };
+};
+
+const genDefaultButtonStyle: GenerateStyle<ButtonToken, CSSObject> = token => ({
+  ...genOutlinedButtonStyle(token, 'Default'),
+});
+
+const genDashedButtonStyle: GenerateStyle<ButtonToken, CSSObject> = token => ({
+  ...genOutlinedButtonStyle(token, 'Dashed'),
+  borderStyle: 'dashed',
 });
 
 // Type: Primary
 const genPrimaryButtonStyle: GenerateStyle<ButtonToken, CSSObject> = token => ({
-  ...genSolidButtonStyle(token),
+  ...genSolidDisabledButtonStyle({
+    color: token.buttonPrimaryDisabledColor,
+    bg: token.buttonPrimaryDisabledBg,
+    borderColor: token.buttonPrimaryDisabledBorderColor,
+  }),
 
-  color: token.colorTextLightSolid,
-  backgroundColor: token.colorPrimary,
+  color: token.buttonPrimaryColor,
+  backgroundColor: token.buttonPrimaryBg,
+  borderColor: token.buttonPrimaryBorderColor,
 
-  boxShadow: `0 ${token.controlOutlineWidth}px 0 ${token.controlOutline}`,
+  boxShadow: token.buttonPrimaryShadow,
 
   ...genHoverActiveButtonStyle(
     {
-      color: token.colorTextLightSolid,
-      backgroundColor: token.colorPrimaryHover,
+      color: token.buttonPrimaryHoverColor,
+      backgroundColor: token.buttonPrimaryHoverBg,
+      borderColor: token.buttonPrimaryHoverBorderColor,
     },
     {
-      color: token.colorTextLightSolid,
-      backgroundColor: token.colorPrimaryActive,
+      color: token.buttonPrimaryActiveColor,
+      backgroundColor: token.buttonPrimaryActiveBg,
+      borderColor: token.buttonPrimaryActiveBorderColor,
     },
   ),
 
   ...genGhostButtonStyle(
     token.componentCls,
-    token.colorPrimary,
-    token.colorPrimary,
-    token.colorTextDisabled,
-    token.colorBorder,
+    token.buttonPrimaryGhostColor,
+    token.buttonPrimaryGhostBorderColor,
+    token.buttonPrimaryGhostDisabledColor,
+    token.buttonPrimaryGhostDisabledBorderColor,
     {
-      color: token.colorPrimaryHover,
-      borderColor: token.colorPrimaryHover,
+      color: token.buttonPrimaryGhostHoverColor,
+      borderColor: token.buttonPrimaryGhostHoverBorderColor,
     },
     {
-      color: token.colorPrimaryActive,
-      borderColor: token.colorPrimaryActive,
+      color: token.buttonPrimaryGhostActiveColor,
+      borderColor: token.buttonPrimaryGhostActiveBorderColor,
     },
   ),
 
   [`&${token.componentCls}-dangerous`]: {
-    backgroundColor: token.colorError,
-    boxShadow: `0 ${token.controlOutlineWidth}px 0 ${token.colorErrorOutline}`,
+    color: token.buttonPrimaryDangerColor,
+    backgroundColor: token.buttonPrimaryDangerBg,
+    borderColor: token.buttonPrimaryDangerBorderColor,
+    boxShadow: token.buttonPrimaryDangerShadow,
 
     ...genHoverActiveButtonStyle(
       {
-        backgroundColor: token.colorErrorHover,
+        color: token.buttonPrimaryDangerHoverColor,
+        backgroundColor: token.buttonPrimaryDangerHoverBg,
+        borderColor: token.buttonPrimaryDangerHoverBorderColor,
       },
       {
-        backgroundColor: token.colorErrorActive,
+        color: token.buttonPrimaryDangerActiveColor,
+        backgroundColor: token.buttonPrimaryDangerActiveBg,
+        borderColor: token.buttonPrimaryDangerActiveBorderColor,
       },
     ),
 
     ...genGhostButtonStyle(
       token.componentCls,
-      token.colorError,
-      token.colorError,
-      token.colorTextDisabled,
-      token.colorBorder,
+      token.buttonPrimaryDangerGhostColor,
+      token.buttonPrimaryDangerGhostBorderColor,
+      token.buttonPrimaryDangerGhostDisabledColor,
+      token.buttonPrimaryDangerGhostDisabledBorderColor,
       {
-        color: token.colorErrorHover,
-        borderColor: token.colorErrorHover,
+        color: token.buttonPrimaryDangerGhostHoverColor,
+        borderColor: token.buttonPrimaryDangerGhostHoverBorderColor,
       },
       {
-        color: token.colorErrorActive,
-        borderColor: token.colorErrorActive,
+        color: token.buttonPrimaryDangerGhostActiveColor,
+        borderColor: token.buttonPrimaryDangerGhostActiveBorderColor,
       },
     ),
-    ...genSolidDisabledButtonStyle(token),
+    ...genSolidDisabledButtonStyle({
+      color: token.buttonPrimaryDangerDisabledColor,
+      bg: token.buttonPrimaryDangerDisabledBg,
+      borderColor: token.buttonPrimaryDangerDisabledBorderColor,
+    }),
   },
-});
-
-// Type: Dashed
-const genDashedButtonStyle: GenerateStyle<ButtonToken, CSSObject> = token => ({
-  ...genDefaultButtonStyle(token),
-  borderStyle: 'dashed',
 });
 
 // Type: Link
 const genLinkButtonStyle: GenerateStyle<ButtonToken, CSSObject> = token => ({
-  color: token.colorLink,
+  color: token.buttonLinkColor,
 
   ...genHoverActiveButtonStyle(
     {
-      color: token.colorLinkHover,
+      color: token.buttonLinkHoverColor,
     },
     {
-      color: token.colorLinkActive,
+      color: token.buttonLinkActiveColor,
     },
   ),
 
-  ...genPureDisabledButtonStyle(token),
+  ...genPureDisabledButtonStyle(token.buttonLinkDisabledColor),
 
   [`&${token.componentCls}-dangerous`]: {
-    color: token.colorError,
+    color: token.buttonLinkDangerColor,
 
     ...genHoverActiveButtonStyle(
       {
-        color: token.colorErrorHover,
+        color: token.buttonLinkDangerHoverColor,
       },
       {
-        color: token.colorErrorActive,
+        color: token.buttonLinkDangerActiveColor,
       },
     ),
 
-    ...genPureDisabledButtonStyle(token),
+    ...genPureDisabledButtonStyle(token.buttonLinkDangerDisabledColor),
   },
 });
 
 // Type: Text
 const genTextButtonStyle: GenerateStyle<ButtonToken, CSSObject> = token => ({
+  color: token.buttonTextColor,
+
   ...genHoverActiveButtonStyle(
     {
-      color: token.colorText,
-      backgroundColor: token.colorBgTextHover,
+      color: token.buttonTextHoverColor,
+      backgroundColor: token.buttonTextHoverBg,
     },
     {
-      color: token.colorText,
-      backgroundColor: token.colorBgTextActive,
+      color: token.buttonTextActiveColor,
+      backgroundColor: token.buttonTextActiveBg,
     },
   ),
 
-  ...genPureDisabledButtonStyle(token),
+  ...genPureDisabledButtonStyle(token.buttonTextDisabledColor),
 
   [`&${token.componentCls}-dangerous`]: {
-    color: token.colorError,
+    color: token.buttonTextDangerColor,
 
-    ...genPureDisabledButtonStyle(token),
+    ...genPureDisabledButtonStyle(token.buttonTextDangerDisabledColor),
     ...genHoverActiveButtonStyle(
       {
-        color: token.colorErrorHover,
-        backgroundColor: token.colorErrorBg,
+        color: token.buttonTextDangerHoverColor,
+        backgroundColor: token.buttonTextDangerHoverBg,
       },
       {
-        color: token.colorErrorHover,
-        backgroundColor: token.colorErrorBg,
+        color: token.buttonTextDangerActiveColor,
+        backgroundColor: token.buttonTextDangerActiveBg,
       },
     ),
   },
 });
 
 // Href and Disabled
-const genDisabledButtonStyle: GenerateStyle<ButtonToken, CSSObject> = token => ({
-  ...genDisabledStyle(token),
-  [`&${token.componentCls}:hover`]: {
-    ...genDisabledStyle(token),
-  },
-});
+const genDisabledButtonStyle: GenerateStyle<ButtonToken, CSSObject> = token => {
+  const colors = {
+    color: token.buttonDisabledColor,
+    bg: token.buttonDisabledBg,
+    borderColor: token.buttonDisabledBorderColor,
+  };
+
+  return {
+    ...genDisabledStyle(colors),
+    [`&${token.componentCls}:hover`]: {
+      ...genDisabledStyle(colors),
+    },
+  };
+};
 
 const genTypeButtonStyle: GenerateStyle<ButtonToken> = token => {
   const { componentCls } = token;
@@ -493,12 +678,152 @@ const genBlockButtonStyle: GenerateStyle<ButtonToken> = token => {
 };
 
 // ============================== Export ==============================
+const genOutlinedDefaultToken = <Variant extends 'Default' | 'Dashed'>(
+  token: GlobalToken,
+  variant: Variant,
+): OutlinedButtonToken<Variant> => {
+  const values: Record<string, string> = {
+    Color: token.colorText,
+    Bg: token.colorBgContainer,
+    BorderColor: token.colorBorder,
+    Shadow: `0 ${token.controlOutlineWidth}px 0 ${token.controlTmpOutline}`,
+    HoverColor: token.colorPrimaryHover,
+    HoverBg: token.colorBgContainer,
+    HoverBorderColor: token.colorPrimaryHover,
+    ActiveColor: token.colorPrimaryActive,
+    ActiveBg: token.colorBgContainer,
+    ActiveBorderColor: token.colorPrimaryActive,
+    DisabledColor: token.colorTextDisabled,
+    DisabledBg: token.colorBgContainerDisabled,
+    DisabledBorderColor: token.colorBorder,
+    GhostColor: token.colorBgContainer,
+    GhostBorderColor: token.colorBgContainer,
+    GhostHoverColor: token.colorPrimaryHover,
+    GhostHoverBorderColor: token.colorPrimaryHover,
+    GhostActiveColor: token.colorPrimaryActive,
+    GhostActiveBorderColor: token.colorPrimaryActive,
+    GhostDisabledColor: token.colorTextDisabled,
+    GhostDisabledBorderColor: token.colorBorder,
+    DangerColor: token.colorError,
+    DangerBg: token.colorBgContainer,
+    DangerBorderColor: token.colorError,
+    DangerHoverColor: token.colorErrorHover,
+    DangerHoverBg: token.colorBgContainer,
+    DangerHoverBorderColor: token.colorErrorBorderHover,
+    DangerActiveColor: token.colorErrorActive,
+    DangerActiveBg: token.colorBgContainer,
+    DangerActiveBorderColor: token.colorErrorActive,
+    DangerDisabledColor: token.colorTextDisabled,
+    DangerDisabledBg: token.colorBgContainerDisabled,
+    DangerDisabledBorderColor: token.colorBorder,
+    DangerGhostColor: token.colorError,
+    DangerGhostBorderColor: token.colorError,
+    DangerGhostHoverColor: token.colorErrorHover,
+    DangerGhostHoverBorderColor: token.colorErrorBorderHover,
+    DangerGhostActiveColor: token.colorErrorActive,
+    DangerGhostActiveBorderColor: token.colorErrorActive,
+    DangerGhostDisabledColor: token.colorTextDisabled,
+    DangerGhostDisabledBorderColor: token.colorBorder,
+  };
+
+  return Object.keys(values).reduce(
+    (acc, key) => ({ ...acc, [`button${variant}${key}`]: values[key] }),
+    {} as OutlinedButtonToken<Variant>,
+  );
+};
+
+const genButtonDefaultToken = (token: GlobalToken): ComponentToken => ({
+  ...genOutlinedDefaultToken(token, 'Default'),
+  ...genOutlinedDefaultToken(token, 'Dashed'),
+
+  buttonPrimaryColor: token.colorTextLightSolid,
+  buttonPrimaryBg: token.colorPrimary,
+  buttonPrimaryBorderColor: 'transparent',
+  buttonPrimaryShadow: `0 ${token.controlOutlineWidth}px 0 ${token.controlOutline}`,
+  buttonPrimaryHoverColor: token.colorTextLightSolid,
+  buttonPrimaryHoverBg: token.colorPrimaryHover,
+  buttonPrimaryHoverBorderColor: 'transparent',
+  buttonPrimaryActiveColor: token.colorTextLightSolid,
+  buttonPrimaryActiveBg: token.colorPrimaryActive,
+  buttonPrimaryActiveBorderColor: 'transparent',
+  buttonPrimaryDisabledColor: token.colorTextDisabled,
+  buttonPrimaryDisabledBg: token.colorBgContainerDisabled,
+  buttonPrimaryDisabledBorderColor: token.colorBorder,
+  buttonPrimaryGhostColor: token.colorPrimary,
+  buttonPrimaryGhostBorderColor: token.colorPrimary,
+  buttonPrimaryGhostHoverColor: token.colorPrimaryHover,
+  buttonPrimaryGhostHoverBorderColor: token.colorPrimaryHover,
+  buttonPrimaryGhostActiveColor: token.colorPrimaryActive,
+  buttonPrimaryGhostActiveBorderColor: token.colorPrimaryActive,
+  buttonPrimaryGhostDisabledColor: token.colorTextDisabled,
+  buttonPrimaryGhostDisabledBorderColor: token.colorBorder,
+
+  buttonPrimaryDangerColor: token.colorTextLightSolid,
+  buttonPrimaryDangerBg: token.colorError,
+  buttonPrimaryDangerBorderColor: 'transparent',
+  buttonPrimaryDangerShadow: `0 ${token.controlOutlineWidth}px 0 ${token.colorErrorOutline}`,
+  buttonPrimaryDangerHoverColor: token.colorTextLightSolid,
+  buttonPrimaryDangerHoverBg: token.colorErrorHover,
+  buttonPrimaryDangerHoverBorderColor: 'transparent',
+  buttonPrimaryDangerActiveColor: token.colorTextLightSolid,
+  buttonPrimaryDangerActiveBg: token.colorErrorActive,
+  buttonPrimaryDangerActiveBorderColor: 'transparent',
+  buttonPrimaryDangerDisabledColor: token.colorTextDisabled,
+  buttonPrimaryDangerDisabledBg: token.colorBgContainerDisabled,
+  buttonPrimaryDangerDisabledBorderColor: token.colorBorder,
+  buttonPrimaryDangerGhostColor: token.colorError,
+  buttonPrimaryDangerGhostBorderColor: token.colorError,
+  buttonPrimaryDangerGhostHoverColor: token.colorErrorHover,
+  buttonPrimaryDangerGhostHoverBorderColor: token.colorErrorHover,
+  buttonPrimaryDangerGhostActiveColor: token.colorErrorActive,
+  buttonPrimaryDangerGhostActiveBorderColor: token.colorErrorActive,
+  buttonPrimaryDangerGhostDisabledColor: token.colorTextDisabled,
+  buttonPrimaryDangerGhostDisabledBorderColor: token.colorBorder,
+
+  buttonTextColor: token.colorText,
+  buttonTextHoverColor: token.colorText,
+  buttonTextHoverBg: token.colorBgTextHover,
+  buttonTextActiveColor: token.colorText,
+  buttonTextActiveBg: token.colorBgTextActive,
+  buttonTextDisabledColor: token.colorTextDisabled,
+  buttonTextDangerColor: token.colorError,
+  buttonTextDangerHoverColor: token.colorErrorHover,
+  buttonTextDangerHoverBg: token.colorErrorBg,
+  buttonTextDangerActiveColor: token.colorErrorHover,
+  buttonTextDangerActiveBg: token.colorErrorBg,
+  buttonTextDangerDisabledColor: token.colorTextDisabled,
+
+  buttonLinkColor: token.colorLink,
+  buttonLinkHoverColor: token.colorLinkHover,
+  buttonLinkActiveColor: token.colorLinkActive,
+  buttonLinkDisabledColor: token.colorTextDisabled,
+  buttonLinkDangerColor: token.colorError,
+  buttonLinkDangerHoverColor: token.colorErrorHover,
+  buttonLinkDangerActiveColor: token.colorErrorActive,
+  buttonLinkDangerDisabledColor: token.colorTextDisabled,
+
+  buttonDisabledColor: token.colorTextDisabled,
+  buttonDisabledBg: token.colorBgContainerDisabled,
+  buttonDisabledBorderColor: token.colorBorder,
+
+  buttonPrimaryCompactSeparatorColor: token.colorPrimaryHover,
+  buttonPrimaryGroupSeparatorColor: token.colorPrimaryHover,
+  buttonDangerGroupSeparatorColor: token.colorErrorHover,
+});
+
 export default genComponentStyleHook('Button', token => {
   const { controlTmpOutline, paddingContentHorizontal } = token;
-  const buttonToken = mergeToken<ButtonToken>(token, {
-    colorOutlineDefault: controlTmpOutline,
-    buttonPaddingHorizontal: paddingContentHorizontal,
-  });
+  // Derive state defaults from the merged token so alias overrides (e.g. `colorTextLightSolid`)
+  // still apply, and only fill tokens that are not already provided by the theme.
+  const buttonToken = mergeToken<ButtonToken>(
+    token,
+    {
+      colorOutlineDefault: controlTmpOutline,
+      buttonPaddingHorizontal: paddingContentHorizontal,
+    },
+    genButtonDefaultToken(token),
+    { preserveExisting: true },
+  );
 
   return [
     // Shared
