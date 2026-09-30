@@ -329,10 +329,16 @@ const genSelectStyle: GenerateStyle<SelectToken> = token => {
 export default genComponentStyleHook(
   'Select',
   (token, { rootPrefixCls }) => {
-    const selectToken: SelectToken = mergeToken<SelectToken>(token, {
-      rootPrefixCls,
-      inputPaddingHorizontalBase: token.paddingSM - 1,
-    });
+    const selectToken: SelectToken = mergeToken<SelectToken>(
+      token,
+      {
+        rootPrefixCls,
+        inputPaddingHorizontalBase: token.paddingSM - 1,
+      },
+      {
+        preserveExisting: true,
+      },
+    );
 
     return [genSelectStyle(selectToken)];
   },

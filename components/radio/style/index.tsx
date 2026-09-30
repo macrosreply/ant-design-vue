@@ -4,7 +4,30 @@ import { genComponentStyleHook, mergeToken } from '../../theme/internal';
 import { genFocusOutline, resetComponent } from '../../style';
 
 // ============================== Tokens ==============================
-export interface ComponentToken {}
+export interface ComponentToken {
+  radioButtonHoverColor: string;
+  radioButtonCheckedColor: string;
+  radioButtonCheckedBg: string;
+  radioButtonCheckedBorderColor: string;
+  radioButtonCheckedHoverColor: string;
+  radioButtonCheckedHoverBg: string;
+  radioButtonCheckedHoverBorderColor: string;
+  radioButtonCheckedActiveColor: string;
+  radioButtonCheckedActiveBg: string;
+  radioButtonCheckedActiveBorderColor: string;
+  radioButtonSolidCheckedColor: string;
+  radioButtonSolidCheckedBg: string;
+  radioButtonSolidCheckedBorderColor: string;
+  radioButtonSolidCheckedHoverColor: string;
+  radioButtonSolidCheckedHoverBg: string;
+  radioButtonSolidCheckedHoverBorderColor: string;
+  radioButtonSolidCheckedActiveColor: string;
+  radioButtonSolidCheckedActiveBg: string;
+  radioButtonSolidCheckedActiveBorderColor: string;
+  radioButtonDisabledCheckedColor: string;
+  radioButtonDisabledCheckedBg: string;
+  radioButtonDisabledCheckedBorderColor: string;
+}
 
 interface RadioToken extends FullToken<'Radio'> {
   radioFocusShadow: string;
@@ -16,16 +39,10 @@ interface RadioToken extends FullToken<'Radio'> {
   radioDotDisabledSize: number;
   radioCheckedColor: string;
   radioDotDisabledColor: string;
-  radioSolidCheckedColor: string;
 
   radioButtonBg: string;
-  radioButtonCheckedBg: string;
   radioButtonColor: string;
-  radioButtonHoverColor: string;
-  radioButtonActiveColor: string;
   radioButtonPaddingHorizontal: number;
-  radioDisabledButtonCheckedBg: string;
-  radioDisabledButtonCheckedColor: string;
   radioWrapperMarginRight: number;
 }
 
@@ -275,15 +292,30 @@ const getRadioButtonStyle: GenerateStyle<RadioToken> = token => {
     borderRadius,
     borderRadiusSM,
     borderRadiusLG,
-    radioCheckedColor,
-    radioButtonCheckedBg,
     radioButtonHoverColor,
-    radioButtonActiveColor,
-    radioSolidCheckedColor,
+    radioButtonCheckedColor,
+    radioButtonCheckedBg,
+    radioButtonCheckedBorderColor,
+    radioButtonCheckedHoverColor,
+    radioButtonCheckedHoverBg,
+    radioButtonCheckedHoverBorderColor,
+    radioButtonCheckedActiveColor,
+    radioButtonCheckedActiveBg,
+    radioButtonCheckedActiveBorderColor,
+    radioButtonSolidCheckedColor,
+    radioButtonSolidCheckedBg,
+    radioButtonSolidCheckedBorderColor,
+    radioButtonSolidCheckedHoverColor,
+    radioButtonSolidCheckedHoverBg,
+    radioButtonSolidCheckedHoverBorderColor,
+    radioButtonSolidCheckedActiveColor,
+    radioButtonSolidCheckedActiveBg,
+    radioButtonSolidCheckedActiveBorderColor,
     colorTextDisabled,
     colorBgContainerDisabled,
-    radioDisabledButtonCheckedColor,
-    radioDisabledButtonCheckedBg,
+    radioButtonDisabledCheckedColor,
+    radioButtonDisabledCheckedBg,
+    radioButtonDisabledCheckedBorderColor,
   } = token;
   return {
     [`${componentCls}-button-wrapper`]: {
@@ -391,7 +423,7 @@ const getRadioButtonStyle: GenerateStyle<RadioToken> = token => {
 
       '&:hover': {
         position: 'relative',
-        color: radioCheckedColor,
+        color: radioButtonHoverColor,
       },
 
       '&:has(:focus-visible)': {
@@ -407,52 +439,66 @@ const getRadioButtonStyle: GenerateStyle<RadioToken> = token => {
 
       [`&-checked:not(${componentCls}-button-wrapper-disabled)`]: {
         zIndex: 1,
-        color: radioCheckedColor,
+        color: radioButtonCheckedColor,
         background: radioButtonCheckedBg,
-        borderColor: radioCheckedColor,
+        borderColor: radioButtonCheckedBorderColor,
 
         '&::before': {
-          backgroundColor: radioCheckedColor,
+          backgroundColor: radioButtonCheckedBorderColor,
         },
 
         '&:first-child': {
-          borderColor: radioCheckedColor,
+          borderColor: radioButtonCheckedBorderColor,
         },
 
         '&:hover': {
-          color: radioButtonHoverColor,
-          borderColor: radioButtonHoverColor,
+          color: radioButtonCheckedHoverColor,
+          background: radioButtonCheckedHoverBg,
+          borderColor: radioButtonCheckedHoverBorderColor,
 
           '&::before': {
-            backgroundColor: radioButtonHoverColor,
+            backgroundColor: radioButtonCheckedHoverBorderColor,
           },
         },
 
         '&:active': {
-          color: radioButtonActiveColor,
-          borderColor: radioButtonActiveColor,
+          color: radioButtonCheckedActiveColor,
+          background: radioButtonCheckedActiveBg,
+          borderColor: radioButtonCheckedActiveBorderColor,
 
           '&::before': {
-            backgroundColor: radioButtonActiveColor,
+            backgroundColor: radioButtonCheckedActiveBorderColor,
           },
         },
       },
 
       [`${componentCls}-group-solid &-checked:not(${componentCls}-button-wrapper-disabled)`]: {
-        color: radioSolidCheckedColor,
-        background: radioCheckedColor,
-        borderColor: radioCheckedColor,
+        color: radioButtonSolidCheckedColor,
+        background: radioButtonSolidCheckedBg,
+        borderColor: radioButtonSolidCheckedBorderColor,
+
+        '&::before': {
+          backgroundColor: radioButtonSolidCheckedBorderColor,
+        },
 
         '&:hover': {
-          color: radioSolidCheckedColor,
-          background: radioButtonHoverColor,
-          borderColor: radioButtonHoverColor,
+          color: radioButtonSolidCheckedHoverColor,
+          background: radioButtonSolidCheckedHoverBg,
+          borderColor: radioButtonSolidCheckedHoverBorderColor,
+
+          '&::before': {
+            backgroundColor: radioButtonSolidCheckedHoverBorderColor,
+          },
         },
 
         '&:active': {
-          color: radioSolidCheckedColor,
-          background: radioButtonActiveColor,
-          borderColor: radioButtonActiveColor,
+          color: radioButtonSolidCheckedActiveColor,
+          background: radioButtonSolidCheckedActiveBg,
+          borderColor: radioButtonSolidCheckedActiveBorderColor,
+
+          '&::before': {
+            backgroundColor: radioButtonSolidCheckedActiveBorderColor,
+          },
         },
       },
 
@@ -470,10 +516,14 @@ const getRadioButtonStyle: GenerateStyle<RadioToken> = token => {
       },
 
       [`&-disabled${componentCls}-button-wrapper-checked`]: {
-        color: radioDisabledButtonCheckedColor,
-        backgroundColor: radioDisabledButtonCheckedBg,
-        borderColor: colorBorder,
+        color: radioButtonDisabledCheckedColor,
+        backgroundColor: radioButtonDisabledCheckedBg,
+        borderColor: radioButtonDisabledCheckedBorderColor,
         boxShadow: 'none',
+
+        '&::before': {
+          backgroundColor: radioButtonDisabledCheckedBorderColor,
+        },
       },
     },
   };
@@ -511,31 +561,50 @@ export default genComponentStyleHook('Radio', token => {
 
   // Radio buttons
   const radioButtonColor = colorText;
-  const radioButtonHoverColor = colorPrimaryHover;
-  const radioButtonActiveColor = colorPrimaryActive;
   const radioButtonPaddingHorizontal = padding - lineWidth;
-  const radioDisabledButtonCheckedColor = colorTextDisabled;
   const radioWrapperMarginRight = marginXS;
 
-  const radioToken = mergeToken<RadioToken>(token, {
-    radioFocusShadow,
-    radioButtonFocusShadow,
-    radioSize,
-    radioDotSize,
-    radioDotDisabledSize,
-    radioCheckedColor,
-    radioDotDisabledColor: colorTextDisabled,
-    radioSolidCheckedColor: colorTextLightSolid,
-    radioButtonBg: colorBgContainer,
-    radioButtonCheckedBg: colorBgContainer,
-    radioButtonColor,
-    radioButtonHoverColor,
-    radioButtonActiveColor,
-    radioButtonPaddingHorizontal,
-    radioDisabledButtonCheckedBg: controlItemBgActiveDisabled,
-    radioDisabledButtonCheckedColor,
-    radioWrapperMarginRight,
-  });
+  const radioToken = mergeToken<RadioToken>(
+    token,
+    {
+      radioFocusShadow,
+      radioButtonFocusShadow,
+      radioSize,
+      radioDotSize,
+      radioDotDisabledSize,
+      radioCheckedColor,
+      radioDotDisabledColor: colorTextDisabled,
+      radioButtonBg: colorBgContainer,
+      radioButtonHoverColor: colorPrimary,
+      radioButtonCheckedColor: colorPrimary,
+      radioButtonCheckedBg: colorBgContainer,
+      radioButtonCheckedBorderColor: colorPrimary,
+      radioButtonCheckedHoverColor: colorPrimaryHover,
+      radioButtonCheckedHoverBg: colorBgContainer,
+      radioButtonCheckedHoverBorderColor: colorPrimaryHover,
+      radioButtonCheckedActiveColor: colorPrimaryActive,
+      radioButtonCheckedActiveBg: colorBgContainer,
+      radioButtonCheckedActiveBorderColor: colorPrimaryActive,
+      radioButtonSolidCheckedColor: colorTextLightSolid,
+      radioButtonSolidCheckedBg: colorPrimary,
+      radioButtonSolidCheckedBorderColor: colorPrimary,
+      radioButtonSolidCheckedHoverColor: colorTextLightSolid,
+      radioButtonSolidCheckedHoverBg: colorPrimaryHover,
+      radioButtonSolidCheckedHoverBorderColor: colorPrimaryHover,
+      radioButtonSolidCheckedActiveColor: colorTextLightSolid,
+      radioButtonSolidCheckedActiveBg: colorPrimaryActive,
+      radioButtonSolidCheckedActiveBorderColor: colorPrimaryActive,
+      radioButtonDisabledCheckedColor: colorTextDisabled,
+      radioButtonDisabledCheckedBg: controlItemBgActiveDisabled,
+      radioButtonDisabledCheckedBorderColor: token.colorBorder,
+      radioButtonColor,
+      radioButtonPaddingHorizontal,
+      radioWrapperMarginRight,
+    },
+    {
+      preserveExisting: true,
+    },
+  );
 
   return [
     getGroupRadioStyle(radioToken),
